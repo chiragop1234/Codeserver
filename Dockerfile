@@ -1,4 +1,3 @@
-
 # Use an official Ubuntu runtime as a parent image
 FROM ubuntu:latest
 
@@ -21,6 +20,6 @@ RUN apt-get update -y && \
 ENV PORT=10000
 
 # Start VSCode
-CMD code-server --port $PORT --disable-telemetry --auth none & \
+RUN code-server --port $PORT --disable-telemetry --auth none & \
     sleep 10 && \
     ./cloudflared tunnel --url http://127.0.0.1:$PORT --metrics localhost:45678
