@@ -19,7 +19,5 @@ RUN apt-get update -y && \
 # Set environment variable for the port
 ENV PORT=10000
 
-# Start VSCode
-RUN code-server --port $PORT --disable-telemetry --auth none & \
-    sleep 10 && \
-    ./cloudflared tunnel --url http://127.0.0.1:$PORT --metrics localhost:45678
+# Start code-server when the container runs
+CMD ["code-server", "--port", "$PORT", "--disable-telemetry", "--auth", "none"]
