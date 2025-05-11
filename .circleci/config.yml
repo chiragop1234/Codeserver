@@ -6,28 +6,20 @@ jobs:
       - image: cimg/base:current
     steps:
       - checkout
-      - setup_remote_docker
+      - setup_remote_docker:
+          version: 20.10.7
       - run:
           name: "Build Docker image"
           command: "docker build -t myimage ."
       - run:
           name: "Run container"
-          command: "docker run -d -p 10000:10000 --name mycontainer myimage"
+          command: "docker run -d --name mycontainer myimage"
       - run:
-          name: "Wait for code-server to start"
-          command: |
-            for i in {1..10}; do
-              if docker exec mycontainer curl -sf http://localhost:10000; then
-                echo "code-server is up!"
-                exit 0
-              fi
-              echo "Waiting for code-server... ($i)"
-              sleep 3
-            done
-            echo "code-server did not start in time" && exit 1
+          name: "Wait for services to start"
+          command: "sleep 15"
       - run:
-          name: "Test code-server from job container"
-          command: "docker exec mycontainer curl -f http://localhost:10000"
+          name: "Test code-server inside container"
+          command: "docker exec mycontainer curl -f http://127.0.0.1:10000"
 
 workflows:
   build-and-test-workflow:
