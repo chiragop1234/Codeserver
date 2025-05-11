@@ -1,36 +1,25 @@
-# Use the latest 2.1 version of CircleCI pipeline process engine
 version: 2.1
 
-# Define a job to build and test the Docker image
 jobs:
   build-and-test:
-    # Specify the execution environment
     docker:
       - image: cimg/base:current
     steps:
-      # Checkout the code from your repository
       - checkout
-      # Set up a remote Docker environment to build and run images
-      - setup_remote_docker:
-          version: 20.10.7
-      # Build the Docker image from your Dockerfile
+      - setup_remote_docker  # Removed version specification
       - run:
           name: "Build Docker image"
           command: "docker build -t myimage ."
-      # Run the container in detached mode, mapping port 10000
       - run:
           name: "Run container"
           command: "docker run -d -p 10000:10000 --name mycontainer myimage"
-      # Wait for code-server to start
       - run:
           name: "Wait for code-server"
           command: "sleep 10"
-      # Test if code-server is responding
       - run:
           name: "Test code-server"
           command: "curl -f http://localhost:10000"
 
-# Define a workflow to orchestrate the job
 workflows:
   build-and-test-workflow:
     jobs:
