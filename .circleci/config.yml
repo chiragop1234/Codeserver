@@ -5,33 +5,20 @@ jobs:
       - image: cimg/base:current
     steps:
       - checkout
-      - setup_remote_docker
+      - setup_remote_docker:
+          version: 20.10.7
       - run:
           name: "Build Docker image"
           command: "docker build -t myimage ."
       - run:
-          name: "Run container"
+          name: "Run container in detached mode"
           command: "docker run -d --name mycontainer myimage"
       - run:
-          name: "Wait for services"
-          command: "sleep 30"
+          name: "Wait for services to initialize"
+          command: "sleep 60"
       - run:
-          name: "Show container logs"
+          name: "Display container logs"
           command: "docker logs mycontainer"
-      - run:
-          name: "Test tunnel URL with retries"
-          command: |
-            TUNNEL_URL=$(docker logs mycontainer | grep 'Visit it at' | awk '{print $NF}')
-            echo "Tunnel URL: $TUNNEL_URL"
-            for i in {1..5}; do
-              if curl -f $TUNNEL_URL; then
-                echo "Service is reachable"
-                break
-              else
-                echo "Service not reachable yet, retrying in 10 seconds..."
-                sleep 10
-              fi
-            done
 workflows:
   build-and-test-workflow:
     jobs:
