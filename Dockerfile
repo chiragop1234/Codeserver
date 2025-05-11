@@ -2,7 +2,7 @@ FROM ubuntu:latest
 WORKDIR /app
 COPY . /app
 RUN apt-get update -y && \
-    apt-get install -y wget curl && \
+    apt-get install -y wget curl netcat && \
     wget -q -nc https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 -O cloudflared && \
     chmod +x cloudflared && \
     curl -fsSL https://code-server.dev/install.sh | sh
